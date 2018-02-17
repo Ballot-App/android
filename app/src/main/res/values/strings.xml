@@ -8,6 +8,9 @@
     <string name="yes">Yay</string>
     <string name="no">Nay</string>
 
+    <!-- Abstain -->
+    <string name="abstain">Abstain</string>
+
     <string name="vote">VOTE</string>
 
 </resources>
