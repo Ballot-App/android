@@ -19,20 +19,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/yay"
-            android:text="@string/yes"
-            android:onClick="onRadioButtonClicked"/>/>
+            android:text="@string/yes"/>/>
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/nay"
-            android:text="@string/no"
-            android:onClick="onRadioButtonClicked"/>/>
+            android:text="@string/no"/>/>
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/abstain"
-            android:text="@string/abstain"
-            android:onClick="onRadioButtonClicked"/>
+            android:text="@string/abstain"/>
     </RadioGroup>
 
     <Button

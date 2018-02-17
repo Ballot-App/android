@@ -12,19 +12,25 @@
         android:layout_gravity="center"
         android:text="@string/votingCode"
         android:textAlignment="center"
-        android:textSize="24sp"/>
+        android:textColor="#EDB147"
+        android:textSize="30sp"/>
 
     <EditText
+        android:id="@+id/enterid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textAlignment="center"
-        android:textSize="24sp"
-        android:id="@+id/enterid"/>
+        android:textColor="#DC5399"
+        android:textSize="36sp"/>
 
     <Button
+        android:id="@+id/enterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/enterButton"/>
+        android:background="#EDB147"
+        android:text="@string/enterCode"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textSize="24sp"/>
 
 </LinearLayout>

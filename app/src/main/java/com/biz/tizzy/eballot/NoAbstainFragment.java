@@ -7,6 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by tizzy on 2/17/18.
@@ -14,13 +21,23 @@ import android.widget.RadioButton;
 
 public class NoAbstainFragment extends Fragment {
 
+    private TextView mTextView;
     private RadioButton mYayButton;
     private RadioButton mNayButton;
     private Button mVoteButton;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_noabstain, container, false);
+
+        mTextView = (TextView) view.findViewById(R.id.description);
+        mTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // dialog with more information
+            }
+        });
 
         mYayButton = (RadioButton) view.findViewById(R.id.yay);
 
@@ -31,26 +48,30 @@ public class NoAbstainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // write to DB
+                if (mNayButton.isChecked()) {
+                    voteNo();
+                } else {
+                    if (mYayButton.isChecked()) {
+                        voteYes();
+                    } else {
+                        Toast.makeText(getContext(), "Please vote", Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         });
 
         return view;
     }
 
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
+    private void voteYes() {
+        Map<String, Object> yes = new HashMap<>();
+        yes.put("yes", true);
+        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(yes);
+    }
 
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.yay:
-                if (checked)
-                    // vote yes
-                    break;
-            case R.id.nay:
-                if (checked)
-                    // vote no
-                    break;
-        }
+    private void voteNo() {
+        Map<String, Object> no = new HashMap<>();
+        no.put("no", false);
+        db.collection("election").document("examp").set(no);
     }
 }

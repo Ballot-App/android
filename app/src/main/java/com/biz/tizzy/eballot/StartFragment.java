@@ -81,12 +81,13 @@ public class StartFragment extends Fragment {
                 } else {
                     Toast.makeText(getContext(), "No such document!", Toast.LENGTH_LONG);
                 }
+                */
 
-                if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
+                //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
+                if (true) {
                     // TEST
                     goToNoAbstain();
                 }
-                */
             }
         });
 

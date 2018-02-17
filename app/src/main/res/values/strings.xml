@@ -2,7 +2,7 @@
     <string name="app_name">eBallot</string>
 
     <string name="votingCode">Please Enter Election ID</string>
-    <string name="enterCode">Okay</string>
+    <string name="enterCode">NEXT</string>
 
     <!-- No Abstain -->
     <string name="yes">Yay</string>
@@ -12,5 +12,6 @@
     <string name="abstain">Abstain</string>
 
     <string name="vote">VOTE</string>
+    <string name="filler">blah blah blah description of the thing</string>
 
 </resources>
