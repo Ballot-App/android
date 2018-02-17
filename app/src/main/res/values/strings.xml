@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">eBallot</string>
 
-    <string name="votingCode">Please Enter Your Voting Code</string>
+    <string name="votingCode">Please Enter Election ID</string>
     <string name="enterCode">Okay</string>
+
+    <!-- No Abstain -->
+    <string name="yes">Yay</string>
+    <string name="no">Nay</string>
+
+    <string name="vote">VOTE</string>
+
 </resources>

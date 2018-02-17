@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AVActivity"></activity>
+        <activity android:name=".NoAbstainActivity"></activity>
     </application>
 
 </manifest>
