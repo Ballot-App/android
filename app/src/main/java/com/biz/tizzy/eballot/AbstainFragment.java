@@ -21,7 +21,7 @@ public class AbstainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_noabstain, container, false);
+        View view = inflater.inflate(R.layout.fragment_abstain, container, false);
 
         mYayButton = (RadioButton) view.findViewById(R.id.yay);
         mNayButton = (RadioButton) view.findViewById(R.id.nay);

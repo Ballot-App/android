@@ -11,7 +11,7 @@ import android.support.v4.app.Fragment;
 public class AbstainActivity extends SingleFragmentActivity {
 
     @Override
-    protected Fragment createFragment() { return new NoAbstainFragment(); }
+    protected Fragment createFragment() { return new AbstainFragment(); }
 
     public static Intent newIntent(Context packageContext) {
         Intent intent = new Intent(packageContext, AbstainActivity.class);

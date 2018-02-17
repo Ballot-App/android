@@ -28,8 +28,8 @@ public class StartFragment extends Fragment {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TEMP go to noAb
-                goToNoAbstain();
+                // TEMP go to abstain
+                goToAbstain();
             }
         });
 
@@ -38,6 +38,11 @@ public class StartFragment extends Fragment {
 
     private void goToNoAbstain() {
         Intent intent = NoAbstainActivity.newIntent(getActivity());
+        startActivity(intent);
+    }
+
+    private void goToAbstain() {
+        Intent intent = AbstainActivity.newIntent(getActivity());
         startActivity(intent);
     }
 }
