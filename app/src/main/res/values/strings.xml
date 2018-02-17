@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">eBallot</string>
+
+    <string name="votingCode">Please Enter Your Voting Code</string>
+    <string name="enterCode">Okay</string>
 </resources>
