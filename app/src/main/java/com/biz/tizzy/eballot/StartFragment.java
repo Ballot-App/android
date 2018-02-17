@@ -19,10 +19,14 @@ public class StartFragment extends Fragment {
 
     private EditText mEnterCode;
     private Button mButton;
+    private String mEnteredVoteID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
+
+        mEnterCode = (EditText) view.findViewById(R.id.enterid);
+        mEnteredVoteID = mEnterCode.getText().toString();
 
         mButton = (Button) view.findViewById(R.id.enterButton);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -45,4 +49,6 @@ public class StartFragment extends Fragment {
         Intent intent = AbstainActivity.newIntent(getActivity());
         startActivity(intent);
     }
+
+
 }
