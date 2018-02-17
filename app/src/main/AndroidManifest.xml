@@ -19,6 +19,12 @@
         <activity android:name=".AVActivity"></activity>
         <activity android:name=".NoAbstainActivity"></activity>
         <activity android:name=".AbstainActivity"></activity>
+
+        <!--
+        <meta-data
+            android:name="com."
+            android:value="AIzaSyAfYcyD4gkifod_IC5UXFdkWHDqZOV3eqI" />
+            -->
     </application>
 
 </manifest>
