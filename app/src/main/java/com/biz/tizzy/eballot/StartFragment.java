@@ -12,20 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.biz.tizzy.eballot.models.Message;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.concurrent.Executor;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * Created by tizzy on 2/17/18.
@@ -40,8 +33,9 @@ public class StartFragment extends Fragment {
     private String mEnteredVoteID;
     private boolean mIsAuthenticated;
 
-    // firebase
-    private DatabaseReference mDatabase;
+    // firestore
+    private FirebaseFirestore db;
+    private DocumentReference mElectionRef;
     private FirebaseAuth mAuth;
 
     @Override
@@ -50,8 +44,9 @@ public class StartFragment extends Fragment {
 
         mEnterCode = (EditText) view.findViewById(R.id.enterid);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference ref = mDatabase.child("election/examp/");
+        //db = FirebaseFirestore.getInstance();
+        //mElectionRef = db.collection("election").document("examp");
+
         // Authenticate anonymously
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInAnonymously().addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
@@ -63,22 +58,8 @@ public class StartFragment extends Fragment {
                 } else {
                     // Authentication failure
                     mIsAuthenticated = false;
+                    Toast.makeText(getContext(), "Authentication Failed", Toast.LENGTH_LONG).show();
                 }
-            }
-        });
-
-        Query electionQuery = ref.orderByChild("elctorate").equalTo("astl4");
-        electionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Message message = dataSnapshot.getValue(Message.class);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled", databaseError.toException());
             }
         });
 
@@ -89,19 +70,30 @@ public class StartFragment extends Fragment {
                 // get entered ID
                 mEnteredVoteID = mEnterCode.getText().toString();
 
-                mDatabase.child(mEnteredVoteID);
+                // read from db
+                /*
+                DocumentReference voteIDRef = mElectionRef.collection("electorate").document("hjk123sd");
+                DocumentSnapshot doc = voteIDRef.get();
+                DocumentSnapshot = doc.getResult();
 
-                if (voteIDinDatabase(mEnteredVoteID)) {
-                    // TEMP go to abstain
-                    goToAbstain();
+                if (document.exists()) {
+                    Toast.makeText(getContext(), "Document data: " + document.getData(), Toast.LENGTH_LONG);
+                } else {
+                    Toast.makeText(getContext(), "No such document!", Toast.LENGTH_LONG);
                 }
+
+                if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
+                    // TEST
+                    goToNoAbstain();
+                }
+                */
             }
         });
 
         return view;
     }
 
-    private boolean voteIDinDatabase(String voteID) {
+    private boolean voteIDinDatabase(final String voteID) {
         boolean inDB = false;
 
         return inDB;

@@ -30,7 +30,7 @@ public class NoAbstainFragment extends Fragment {
         mVoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
+                // write to DB
             }
         });
 
