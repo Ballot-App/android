@@ -101,7 +101,7 @@ public class StartFragment extends Fragment {
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
                 if (true) {
                     // TEST
-                    goToNoAbstain();
+                    goToAbstain();
                 }
             }
         });

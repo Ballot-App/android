@@ -7,6 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.Toast;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by tizzy on 2/17/18.
@@ -18,10 +24,15 @@ public class AbstainFragment extends Fragment {
     private RadioButton mNayButton;
     private RadioButton mAbstainButton;
     private Button mVoteButton;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Map<String, Object> votes = new HashMap<>();
+    private int mNumVotes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_abstain, container, false);
+
+        mNumVotes = 0;
 
         mYayButton = (RadioButton) view.findViewById(R.id.yay);
         mNayButton = (RadioButton) view.findViewById(R.id.nay);
@@ -31,31 +42,41 @@ public class AbstainFragment extends Fragment {
         mVoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
+                // write to DB
+                if (mNayButton.isChecked()) {
+                    voteNo();
+                } else {
+                    if (mYayButton.isChecked()) {
+                        voteYes();
+                    } else {
+                        if (mAbstainButton.isChecked()) {
+                            voteAbs();
+                        } else {
+                            Toast.makeText(getContext(), "Please vote", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
             }
         });
 
         return view;
     }
 
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
+    private void voteYes() {
+        votes.put("vote" + mNumVotes, 0);
+        mNumVotes++;
+        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
+    }
 
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.yay:
-                if (checked)
-                    // vote yes
-                    break;
-            case R.id.nay:
-                if (checked)
-                    // vote no
-                    break;
-            case R.id.abstain:
-                if (checked)
-                    // vote abstain
-                    break;
-        }
+    private void voteNo() {
+        votes.put("vote" + mNumVotes, 1);
+        mNumVotes++;
+        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
+    }
+
+    private void voteAbs() {
+        votes.put("vote" + mNumVotes, 2);
+        mNumVotes++;
+        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
     }
 }
