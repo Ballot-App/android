@@ -46,6 +46,9 @@ public class StartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
 
+        Firebase.setAndroidContext(getActivity());
+        Firebase myFirebaseRef = new Firebase("https://eballot-46bb1.firebaseio.com/");
+
         // Authenticate anonymously
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInAnonymously().addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
@@ -54,6 +57,7 @@ public class StartFragment extends Fragment {
                 if (task.isSuccessful()) {
                     // Authentication successful
                     mIsAuthenticated = true;
+
                 } else {
                     // Authentication failure
                     mIsAuthenticated = false;
@@ -64,25 +68,14 @@ public class StartFragment extends Fragment {
 
         mEnterCode = (EditText) view.findViewById(R.id.enterid);
 
-        Firebase.setAndroidContext(getActivity());
-        Firebase myFirebaseRef = new Firebase("https://eballot-46bb1.firebaseio.com/");
-
-        // TESTING
-        Firebase result =  myFirebaseRef.child("election/examp/electorate");
+        // TESTING -----------
+        Firebase result =  myFirebaseRef.child("election/examp");
         Log.d(TAG, "result " + result);
 
         boolean secondBool = result == null;
         Log.d(TAG, "result " + secondBool);
 
-        myFirebaseRef.child("election").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Log.d(TAG, "Snapshot " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
-            }
-            @Override public void onCancelled(FirebaseError error) { }
-        });
-
-        // -------------------
+        // --------------------
 
 
         mButton = (Button) view.findViewById(R.id.enterButton);

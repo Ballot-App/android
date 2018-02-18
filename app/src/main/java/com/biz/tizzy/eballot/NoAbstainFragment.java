@@ -10,6 +10,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -26,10 +28,14 @@ public class NoAbstainFragment extends Fragment {
     private RadioButton mNayButton;
     private Button mVoteButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Map<String, Object> votes = new HashMap<>();
+    private int mNumVotes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_noabstain, container, false);
+
+        mNumVotes = 0;
 
         mTextView = (TextView) view.findViewById(R.id.description);
         mTextView.setOnClickListener(new View.OnClickListener() {
@@ -64,14 +70,14 @@ public class NoAbstainFragment extends Fragment {
     }
 
     private void voteYes() {
-        Map<String, Object> yes = new HashMap<>();
-        yes.put("yes", true);
-        //db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(yes);
+        votes.put("vote" + mNumVotes, true);
+        mNumVotes++;
+        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
     }
 
     private void voteNo() {
-        Map<String, Object> no = new HashMap<>();
-        no.put("no", false);
-        //db.collection("election").document("examp").set(no);
+        votes.put("vote" + mNumVotes, false);
+        mNumVotes++;
+        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
     }
 }
