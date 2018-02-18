@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "515038220810",
+    "firebase_url": "https://eballot-46bb1.firebaseio.com",
+    "project_id": "eballot-46bb1",
+    "storage_bucket": "eballot-46bb1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515038220810:android:86875ea351ea5601",
+        "android_client_info": {
+          "package_name": "com.biz.tizzy.eballot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515038220810-q8aqgloppta84f5283lhvl5d8iu5j2u2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.biz.tizzy.eballot",
+            "certificate_hash": "4c0c6ba5fa131bd9fbcdd1a843a0a47c7e71e47c"
+          }
+        },
+        {
+          "client_id": "515038220810-vr5p2oleojj9lli5bnnsg2so4se6tbqo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAu2QQvcUAX86L1pDRV4E5MTXpPH6XK2rQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "515038220810-vr5p2oleojj9lli5bnnsg2so4se6tbqo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

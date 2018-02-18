@@ -66,12 +66,12 @@ public class NoAbstainFragment extends Fragment {
     private void voteYes() {
         Map<String, Object> yes = new HashMap<>();
         yes.put("yes", true);
-        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(yes);
+        //db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(yes);
     }
 
     private void voteNo() {
         Map<String, Object> no = new HashMap<>();
         no.put("no", false);
-        db.collection("election").document("examp").set(no);
+        //db.collection("election").document("examp").set(no);
     }
 }

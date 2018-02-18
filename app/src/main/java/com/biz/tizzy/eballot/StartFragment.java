@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -19,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.*;
 
 /**
  * Created by tizzy on 2/17/18.
@@ -35,17 +40,11 @@ public class StartFragment extends Fragment {
 
     // firestore
     private FirebaseFirestore db;
-    private DocumentReference mElectionRef;
     private FirebaseAuth mAuth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
-
-        mEnterCode = (EditText) view.findViewById(R.id.enterid);
-
-        //db = FirebaseFirestore.getInstance();
-        //mElectionRef = db.collection("election").document("examp");
 
         // Authenticate anonymously
         mAuth = FirebaseAuth.getInstance();
@@ -62,6 +61,29 @@ public class StartFragment extends Fragment {
                 }
             }
         });
+
+        mEnterCode = (EditText) view.findViewById(R.id.enterid);
+
+        Firebase.setAndroidContext(getActivity());
+        Firebase myFirebaseRef = new Firebase("https://eballot-46bb1.firebaseio.com/");
+
+        // TESTING
+        Firebase result =  myFirebaseRef.child("election/examp/electorate");
+        Log.d(TAG, "result " + result);
+
+        boolean secondBool = result == null;
+        Log.d(TAG, "result " + secondBool);
+
+        myFirebaseRef.child("election").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Log.d(TAG, "Snapshot " + snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+            }
+            @Override public void onCancelled(FirebaseError error) { }
+        });
+
+        // -------------------
+
 
         mButton = (Button) view.findViewById(R.id.enterButton);
         mButton.setOnClickListener(new View.OnClickListener() {
