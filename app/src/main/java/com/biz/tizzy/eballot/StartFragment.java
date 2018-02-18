@@ -49,6 +49,8 @@ public class StartFragment extends Fragment {
         Firebase.setAndroidContext(getActivity());
         Firebase myFirebaseRef = new Firebase("https://eballot-46bb1.firebaseio.com/");
 
+        mEnterCode = (EditText) view.findViewById(R.id.enterid);
+
         // Authenticate anonymously
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInAnonymously().addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
@@ -65,8 +67,6 @@ public class StartFragment extends Fragment {
                 }
             }
         });
-
-        mEnterCode = (EditText) view.findViewById(R.id.enterid);
 
         // TESTING -----------
         Firebase result =  myFirebaseRef.child("election/examp");
@@ -91,6 +91,7 @@ public class StartFragment extends Fragment {
                 if (true) {
                     // TEST
                     goToAbstain();
+                    mEnterCode.setText("");
                 }
             }
         });
