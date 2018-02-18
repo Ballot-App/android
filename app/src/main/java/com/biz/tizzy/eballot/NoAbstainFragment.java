@@ -2,6 +2,7 @@ package com.biz.tizzy.eballot;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import java.util.Map;
 
 public class NoAbstainFragment extends Fragment {
 
+    private static final String DIALOG_THANK_YOU = "ThankYou";
+
     private TextView mTextView;
     private RadioButton mYayButton;
     private RadioButton mNayButton;
@@ -36,6 +39,9 @@ public class NoAbstainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_noabstain, container, false);
 
         mNumVotes = 0;
+
+        // need to first set up votes from db
+
 
         mTextView = (TextView) view.findViewById(R.id.description);
         mTextView.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +69,11 @@ public class NoAbstainFragment extends Fragment {
                         Toast.makeText(getContext(), "Please vote", Toast.LENGTH_LONG).show();
                     }
                 }
+
+                // start dialog
+                FragmentManager manager = getFragmentManager();
+                ThankYouFragment dialog = new ThankYouFragment();
+                dialog.show(manager, DIALOG_THANK_YOU);
             }
         });
 

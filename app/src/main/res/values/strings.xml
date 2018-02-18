@@ -4,14 +4,14 @@
     <string name="votingCode">Please Enter Election ID</string>
     <string name="enterCode">NEXT</string>
 
-    <!-- No Abstain -->
+    <!-- Votes -->
     <string name="yes">Yay</string>
     <string name="no">Nay</string>
-
-    <!-- Abstain -->
     <string name="abstain">Abstain</string>
 
     <string name="vote">VOTE</string>
     <string name="filler">blah blah blah description of the thing</string>
+
+    <string name="close">CLOSE</string>
 
 </resources>

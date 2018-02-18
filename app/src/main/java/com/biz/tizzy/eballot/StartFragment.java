@@ -75,6 +75,7 @@ public class StartFragment extends Fragment {
         boolean secondBool = result == null;
         Log.d(TAG, "result " + secondBool);
 
+
         // --------------------
 
 
@@ -86,22 +87,12 @@ public class StartFragment extends Fragment {
                 mEnteredVoteID = mEnterCode.getText().toString();
 
                 // read from db
-                /*
-                DocumentReference voteIDRef = mElectionRef.collection("electorate").document("hjk123sd");
-                DocumentSnapshot doc = voteIDRef.get();
-                DocumentSnapshot = doc.getResult();
 
-                if (document.exists()) {
-                    Toast.makeText(getContext(), "Document data: " + document.getData(), Toast.LENGTH_LONG);
-                } else {
-                    Toast.makeText(getContext(), "No such document!", Toast.LENGTH_LONG);
-                }
-                */
 
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
                 if (true) {
                     // TEST
-                    goToAbstain();
+                    goToNoAbstain();
                 }
             }
         });
@@ -109,10 +100,23 @@ public class StartFragment extends Fragment {
         return view;
     }
 
-    private boolean voteIDinDatabase(final String voteID) {
-        boolean inDB = false;
+    private String getVoteIDfromDB(Firebase firebase) {
+        String voteID = null;
 
-        return inDB;
+        firebase.child("election").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Log.d(TAG, snapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d(TAG, "Error: " + firebaseError);
+            }
+
+        });
+
+        return voteID;
     }
 
     private void goToNoAbstain() {

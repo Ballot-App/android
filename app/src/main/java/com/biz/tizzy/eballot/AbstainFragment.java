@@ -34,6 +34,8 @@ public class AbstainFragment extends Fragment {
 
         mNumVotes = 0;
 
+        // need to first set up votes from db
+
         mYayButton = (RadioButton) view.findViewById(R.id.yay);
         mNayButton = (RadioButton) view.findViewById(R.id.nay);
         mAbstainButton = (RadioButton) view.findViewById(R.id.abstain);

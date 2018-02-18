@@ -6,11 +6,18 @@
     android:gravity="center"
     android:orientation="vertical" >
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="180sp"
+        android:src="@drawable/pleasevote"
+        android:layout_marginBottom="65dp"/>
+
     <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/filler"/>
+        android:text="@string/filler"
+        android:textSize="18sp"/>
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
@@ -22,19 +29,21 @@
             android:id="@+id/yay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:buttonTint="@color/colorPrimaryDark"
             android:text="@string/yes"
-            android:textColor="#DC5399"
-            android:textSize="36sp"
-            android:layout_margin="16sp"/>/>
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="24sp"/>/>
 
         <RadioButton
             android:id="@+id/nay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:buttonTint="@color/colorPrimaryDark"
             android:text="@string/no"
-            android:textColor="#DC5399"
-            android:textSize="36sp"
-            android:layout_margin="16sp"/>/>
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="24sp"/>/>
     </RadioGroup>
 
     <Button
@@ -42,6 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#EDB147"
-        android:text="@string/vote"/>
+        android:text="@string/vote"
+        android:layout_margin="20dp"/>
 
 </LinearLayout>

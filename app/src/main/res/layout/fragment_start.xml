@@ -6,6 +6,12 @@
     android:gravity="center"
     android:orientation="vertical" >
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="200sp"
+        android:src="@drawable/logosmall"
+        android:layout_margin="20dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,6 +37,7 @@
         android:background="#EDB147"
         android:text="@string/enterCode"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="24sp"/>
+        android:textSize="24sp"
+        android:layout_margin="20dp"/>
 
 </LinearLayout>
