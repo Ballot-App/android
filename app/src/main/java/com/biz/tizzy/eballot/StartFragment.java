@@ -74,8 +74,6 @@ public class StartFragment extends Fragment {
 
         boolean secondBool = result == null;
         Log.d(TAG, "result " + secondBool);
-
-
         // --------------------
 
 
@@ -92,7 +90,7 @@ public class StartFragment extends Fragment {
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
                 if (true) {
                     // TEST
-                    goToNoAbstain();
+                    goToAbstain();
                 }
             }
         });

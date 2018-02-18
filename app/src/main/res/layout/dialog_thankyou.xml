@@ -16,9 +16,10 @@
         android:id="@+id/close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/colorAccent"
         android:text="@string/close"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:layout_margin="16dp"/>
+        android:textSize="16sp"/>
 
 </LinearLayout>
