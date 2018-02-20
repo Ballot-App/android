@@ -99,18 +99,18 @@ public class AbstainFragment extends Fragment {
     private void voteYes() {
         votes.put("vote" + mNumVotes, 0);
         mNumVotes++;
-        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
+        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
     }
 
     private void voteNo() {
         votes.put("vote" + mNumVotes, 1);
         mNumVotes++;
-        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
+        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
     }
 
     private void voteAbs() {
         votes.put("vote" + mNumVotes, 2);
         mNumVotes++;
-        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
+        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
     }
 }

@@ -35,6 +35,7 @@ public class StartFragment extends Fragment {
     private EditText mEnterCode;
     private Button mButton;
     private String mElecID;
+    private String mVoteType;
     private boolean mIsAuthenticated;
 
     // firestore
@@ -75,6 +76,8 @@ public class StartFragment extends Fragment {
         Log.d(TAG, "result " + secondBool);
         // --------------------
 
+        // need to get vote type
+        mVoteType = "abstain";
 
         mButton = (Button) view.findViewById(R.id.enterButton);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -85,11 +88,20 @@ public class StartFragment extends Fragment {
 
                 // read from db
 
-
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
                 if (true) {
-                    // TEST
-                    goToNoAbstain();
+                    switch (mVoteType) {
+                        case "abstain":
+                            goToAbstain();
+                            break;
+                        case "noabstain":
+                            goToNoAbstain();
+                            break;
+                        default:
+                            Toast.makeText(getContext(), "Could not get vote type", Toast.LENGTH_LONG).show();
+                            break;
+                    }
+                    // clear previously entered code
                     mEnterCode.setText("");
                 }
             }

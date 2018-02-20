@@ -55,7 +55,7 @@ public class NoAbstainFragment extends Fragment {
         mNumVotes = 0;
 
         // need to first set up votes from db
-
+        // so everything isn't just overwritten...
 
         mTextView = (TextView) view.findViewById(R.id.description);
         mTextView.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +66,6 @@ public class NoAbstainFragment extends Fragment {
         });
 
         mYayButton = (RadioButton) view.findViewById(R.id.yay);
-
         mNayButton = (RadioButton) view.findViewById(R.id.nay);
 
         mVoteButton = (Button) view.findViewById(R.id.vote);
@@ -102,12 +101,12 @@ public class NoAbstainFragment extends Fragment {
     private void voteYes() {
         votes.put("vote" + mNumVotes, true);
         mNumVotes++;
-        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
+        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
     }
 
     private void voteNo() {
         votes.put("vote" + mNumVotes, false);
         mNumVotes++;
-        db.collection("election").document("examp").collection("electorate").document("hjk123sd").set(votes);
+        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
     }
 }
