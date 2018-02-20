@@ -22,6 +22,7 @@ import java.util.Map;
 public class AbstainFragment extends Fragment {
 
     private static final String DIALOG_THANK_YOU = "ThankYou";
+    private static final String ARG_ELECID = "elecID";
 
     private RadioButton mYayButton;
     private RadioButton mNayButton;
@@ -30,10 +31,23 @@ public class AbstainFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Map<String, Object> votes = new HashMap<>();
     private int mNumVotes;
+    private String mElecID;
+
+    public static AbstainFragment newInstance(String elecID) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_ELECID, elecID);
+
+        AbstainFragment fragment = new AbstainFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_abstain, container, false);
+
+        // get elecID
+        mElecID = (String) getArguments().getSerializable(ARG_ELECID);
 
         mNumVotes = 0;
 

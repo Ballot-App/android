@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.*;
 
 /**
  * Created by tizzy on 2/17/18.
@@ -32,10 +30,11 @@ import com.google.firebase.*;
 public class StartFragment extends Fragment {
 
     private static final String TAG = "StartFragment";
+    public static final String EXTRA_ELECID = "com.biz.tizzy.eballot.elecid";
 
     private EditText mEnterCode;
     private Button mButton;
-    private String mEnteredVoteID;
+    private String mElecID;
     private boolean mIsAuthenticated;
 
     // firestore
@@ -82,7 +81,7 @@ public class StartFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // get entered ID
-                mEnteredVoteID = mEnterCode.getText().toString();
+                mElecID = mEnterCode.getText().toString();
 
                 // read from db
 
@@ -124,8 +123,10 @@ public class StartFragment extends Fragment {
     }
 
     private void goToAbstain() {
-        Intent intent = AbstainActivity.newIntent(getActivity());
+        Intent intent = AbstainActivity.newIntent(getActivity(), mElecID);
+        intent.putExtra(EXTRA_ELECID, mElecID);
         startActivity(intent);
+
     }
 
 
