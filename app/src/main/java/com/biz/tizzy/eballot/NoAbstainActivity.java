@@ -10,12 +10,17 @@ import android.support.v4.app.Fragment;
 
 public class NoAbstainActivity extends SingleFragmentActivity {
 
+    private static final String EXTRA_ELECID = "com.biz.tizzy.eballot.elecid";
+
     @Override
-    protected Fragment createFragment() { return new NoAbstainFragment(); }
+    protected Fragment createFragment() {
+        String elecID = (String) getIntent().getSerializableExtra(EXTRA_ELECID);
+        return NoAbstainFragment.newInstance(elecID);
+    }
 
-    public static Intent newIntent(Context packageContext) {
+    public static Intent newIntent(Context packageContext, String elecID) {
         Intent intent = new Intent(packageContext, NoAbstainActivity.class);
-
+        intent.putExtra(EXTRA_ELECID, elecID);
         return intent;
     }
 

@@ -89,7 +89,7 @@ public class StartFragment extends Fragment {
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
                 if (true) {
                     // TEST
-                    goToAbstain();
+                    goToNoAbstain();
                     mEnterCode.setText("");
                 }
             }
@@ -118,7 +118,8 @@ public class StartFragment extends Fragment {
     }
 
     private void goToNoAbstain() {
-        Intent intent = NoAbstainActivity.newIntent(getActivity());
+        Intent intent = NoAbstainActivity.newIntent(getActivity(), mElecID);
+        intent.putExtra(EXTRA_ELECID, mElecID);
         startActivity(intent);
     }
 

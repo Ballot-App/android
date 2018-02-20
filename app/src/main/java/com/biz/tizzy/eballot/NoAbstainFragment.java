@@ -25,6 +25,7 @@ import java.util.Map;
 public class NoAbstainFragment extends Fragment {
 
     private static final String DIALOG_THANK_YOU = "ThankYou";
+    private static final String ARG_ELECID = "elecID";
 
     private TextView mTextView;
     private RadioButton mYayButton;
@@ -33,10 +34,23 @@ public class NoAbstainFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Map<String, Object> votes = new HashMap<>();
     private int mNumVotes;
+    private String mElecID;
+
+    public static NoAbstainFragment newInstance(String elecID) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_ELECID, elecID);
+
+        NoAbstainFragment fragment = new NoAbstainFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_noabstain, container, false);
+
+        // get elecID
+        mElecID = (String) getArguments().getSerializable(ARG_ELECID);
 
         mNumVotes = 0;
 
