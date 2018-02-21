@@ -38,6 +38,8 @@ public class AbstainFragment extends Fragment {
     private Map<String, Object> votes = new HashMap<>();
     private int mNumVotes;
     private long mNumYesVotes;
+    private long mNumNoVotes;
+    private long mNumAbsVotes;
     private String mElecID;
 
     public static AbstainFragment newInstance(String elecID) {
@@ -59,13 +61,11 @@ public class AbstainFragment extends Fragment {
         // read num yes votes
         new Thread(new Runnable() {
             public void run() {
-                readYesVotes();
+                readNumVotes();
             }
         }).start();
 
         mNumVotes = 0;
-
-        // need to first set up votes from db
 
         mYayButton = (RadioButton) view.findViewById(R.id.yay);
         mNayButton = (RadioButton) view.findViewById(R.id.nay);
@@ -128,7 +128,7 @@ public class AbstainFragment extends Fragment {
         db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
     }
 
-    private void readYesVotes() {
+    private void readNumVotes() {
         DocumentReference user = db.collection("election").document("examp").collection("electorate").document(mElecID);
         user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -137,6 +137,8 @@ public class AbstainFragment extends Fragment {
                     DocumentSnapshot doc = task.getResult();
 
                     mNumYesVotes = (long) doc.get("yes");
+                    mNumNoVotes = (long) doc.get("no");
+                    //mNumAbsVotes = (long) doc.get("abstain");
 
                 }
             }
