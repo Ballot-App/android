@@ -63,11 +63,6 @@ public class AbstainFragment extends Fragment {
         // get elecID
         mElecID = (String) getArguments().getSerializable(ARG_ELECID);
 
-        // initialize votes
-        votes.put("yes", 0);
-        votes.put("no", 0);
-        votes.put("abstain", 0);
-
         // get description of votes
         new Thread(new Runnable() {
             @Override
@@ -79,12 +74,10 @@ public class AbstainFragment extends Fragment {
         // read num yes votes
         new Thread(new Runnable() {
             public void run() {
-                /*
                 readNumVotes();
                 votes.put("yes", mNumNoVotes);
                 votes.put("no", mNumNoVotes);
                 votes.put("abstain", mNumAbsVotes);
-                */
             }
         }).start();
 
@@ -135,7 +128,7 @@ public class AbstainFragment extends Fragment {
 
     private void voteYes() {
         votes.put("yes", mNumYesVotes+1);
-        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
+        db.collection("election").document("LukeE").collection("electorate").document(mElecID).set(votes);
     }
 
     private void voteNo() {
@@ -149,16 +142,32 @@ public class AbstainFragment extends Fragment {
     }
 
     private void readNumVotes() {
-        DocumentReference user = db.collection("electorate").document(mElecID);
+        DocumentReference user = db.collection("election").document("LukeE").collection("electorate").document(mElecID);
+
         user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
-                    DocumentSnapshot doc = task.getResult();
+                    // need to check if this document exists
 
-                    mNumYesVotes = (long) doc.get("yes");
-                    mNumNoVotes = (long) doc.get("no");
-                    mNumAbsVotes = (long) doc.get("abstain");
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        mNumYesVotes = (long) doc.get("yes");
+                        mNumNoVotes = (long) doc.get("no");
+                        mNumAbsVotes = (long) doc.get("abstain");
+                    } else {
+                        Log.e(TAG, "Document doesn't exist");
+
+                        // initialize votes
+                        votes.put("yes", 0);
+                        votes.put("no", 0);
+                        votes.put("abstain", 0);
+
+                        // set num votes to 0
+                        mNumYesVotes = 0;
+                        mNumNoVotes = 0;
+                        mNumAbsVotes = 0;
+                    }
 
                 }
             }
