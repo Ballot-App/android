@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class AbstainFragment extends Fragment {
 
     private static final String DIALOG_THANK_YOU = "ThankYou";
     private static final String ARG_ELECID = "elecID";
+    private static final String TAG = "StartFragment";
 
     private RadioButton mYayButton;
     private RadioButton mNayButton;
@@ -77,10 +79,12 @@ public class AbstainFragment extends Fragment {
         // read num yes votes
         new Thread(new Runnable() {
             public void run() {
+                /*
                 readNumVotes();
                 votes.put("yes", mNumNoVotes);
                 votes.put("no", mNumNoVotes);
                 votes.put("abstain", mNumAbsVotes);
+                */
             }
         }).start();
 
@@ -176,6 +180,7 @@ public class AbstainFragment extends Fragment {
                     DocumentSnapshot doc = task.getResult();
 
                     mDesc = (String) doc.get("description");
+                    Log.d(TAG, mDesc);
                     mDescView.setText(mDesc);
                 }
             }
