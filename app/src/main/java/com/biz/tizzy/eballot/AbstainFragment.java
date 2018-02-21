@@ -1,6 +1,7 @@
 package com.biz.tizzy.eballot;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -10,6 +11,11 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -31,6 +37,7 @@ public class AbstainFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Map<String, Object> votes = new HashMap<>();
     private int mNumVotes;
+    private long mNumYesVotes;
     private String mElecID;
 
     public static AbstainFragment newInstance(String elecID) {
@@ -48,6 +55,13 @@ public class AbstainFragment extends Fragment {
 
         // get elecID
         mElecID = (String) getArguments().getSerializable(ARG_ELECID);
+
+        // read num yes votes
+        new Thread(new Runnable() {
+            public void run() {
+                readYesVotes();
+            }
+        }).start();
 
         mNumVotes = 0;
 
@@ -71,6 +85,7 @@ public class AbstainFragment extends Fragment {
 
                 } else {
                     if (mYayButton.isChecked()) {
+
                         voteYes();
                         // start dialog
                         FragmentManager manager = getFragmentManager();
@@ -97,8 +112,7 @@ public class AbstainFragment extends Fragment {
     }
 
     private void voteYes() {
-        votes.put("vote" + mNumVotes, 0);
-        mNumVotes++;
+        votes.put("yes", mNumYesVotes+1);
         db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
     }
 
@@ -113,4 +127,27 @@ public class AbstainFragment extends Fragment {
         mNumVotes++;
         db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
     }
+
+    private void readYesVotes() {
+        DocumentReference user = db.collection("election").document("examp").collection("electorate").document(mElecID);
+        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot doc = task.getResult();
+
+                    mNumYesVotes = (long) doc.get("yes");
+
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+                    }
+                });
+    }
+
+
 }
