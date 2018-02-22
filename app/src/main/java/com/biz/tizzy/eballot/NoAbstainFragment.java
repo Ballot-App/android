@@ -31,6 +31,7 @@ public class NoAbstainFragment extends Fragment {
     private static final String DIALOG_THANK_YOU = "ThankYou";
     private static final String ARG_ELECID = "elecID";
     private static final String ARG_ELECNAME = "elecName";
+    private static final String ARG_BALLOTID = "ballotID";
 
     private TextView mDescView;
     private RadioButton mYayButton;
@@ -40,15 +41,17 @@ public class NoAbstainFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Map<String, Object> votes = new HashMap<>();
 
+    private String mElectionID;
     private String mBallotID;
     private String mDesc;
     private String mUserID;
     private String mElectionName;
 
-    public static NoAbstainFragment newInstance(String elecID, String elecName) {
+    public static NoAbstainFragment newInstance(String elecID, String elecName, String ballotID) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_ELECID, elecID);
         args.putSerializable(ARG_ELECNAME, elecName);
+        args.putSerializable(ARG_BALLOTID, elecName);
 
         NoAbstainFragment fragment = new NoAbstainFragment();
         fragment.setArguments(args);
@@ -59,9 +62,10 @@ public class NoAbstainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_noabstain, container, false);
 
-        // get elecID and elecName
-        mBallotID = (String) getArguments().getSerializable(ARG_ELECID);
+        // get elecID and elecName and ballotID
+        mElectionID = (String) getArguments().getSerializable(ARG_ELECID);
         mElectionName = (String) getArguments().getSerializable(ARG_ELECNAME);
+        mBallotID = (String) getArguments().getSerializable(ARG_BALLOTID);
         votes.put("ballotUID", mBallotID);
 
         // get description of votes
@@ -91,17 +95,17 @@ public class NoAbstainFragment extends Fragment {
                 if (mNayButton.isChecked()) {
                     voteNo();
                     // start dialog
-                    FragmentManager manager = getFragmentManager();
-                    ThankYouFragment dialog = new ThankYouFragment();
-                    dialog.show(manager, DIALOG_THANK_YOU);
+                    //FragmentManager manager = getFragmentManager();
+                    //ThankYouFragment dialog = new ThankYouFragment();
+                    //dialog.show(manager, DIALOG_THANK_YOU);
 
                 } else {
                     if (mYayButton.isChecked()) {
                         voteYes();
                         // start dialog
-                        FragmentManager manager = getFragmentManager();
-                        ThankYouFragment dialog = new ThankYouFragment();
-                        dialog.show(manager, DIALOG_THANK_YOU);
+                        //FragmentManager manager = getFragmentManager();
+                        //ThankYouFragment dialog = new ThankYouFragment();
+                        //dialog.show(manager, DIALOG_THANK_YOU);
 
                     } else {
                         Toast.makeText(getContext(), "Please vote", Toast.LENGTH_LONG).show();
@@ -114,11 +118,11 @@ public class NoAbstainFragment extends Fragment {
     }
 
     private void voteYes() {
-        votes.put("votes", true);db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
+        votes.put("votes", true);db.collection("election").document(mElectionName).collection("electorate").document(mElectionID).update("votes."+mBallotID, votes);
     }
 
     private void voteNo() {
-        votes.put("votes", false);db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
+        votes.put("votes", false);db.collection("election").document(mElectionName).collection("electorate").document(mElectionID).update("votes."+mBallotID, votes);
     }
 
     private void readDesc() {

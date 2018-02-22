@@ -31,6 +31,7 @@ public class AbstainFragment extends Fragment {
     private static final String DIALOG_THANK_YOU = "ThankYou";
     private static final String ARG_ELECID = "elecID";
     private static final String ARG_ELECNAME = "elecName";
+    private static final String ARG_BALLOTID = "ballotID";
     private static final String TAG = "StartFragment";
 
     private RadioButton mYayButton;
@@ -42,15 +43,17 @@ public class AbstainFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Map<String, Object> votes = new HashMap<>();
 
+    private String mElectionID;
     private String mBallotID;
     private String mDesc;
     private String mUserID;
     private String mElectionName;
 
-    public static AbstainFragment newInstance(String elecID, String elecName) {
+    public static AbstainFragment newInstance(String elecID, String elecName, String ballotID) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_ELECID, elecID);
         args.putSerializable(ARG_ELECNAME, elecName);
+        args.putSerializable(ARG_BALLOTID, ballotID);
 
         AbstainFragment fragment = new AbstainFragment();
         fragment.setArguments(args);
@@ -61,10 +64,11 @@ public class AbstainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_abstain, container, false);
 
-        // get elecID and elecName
-        mBallotID = (String) getArguments().getSerializable(ARG_ELECID);
-        votes.put("ballotUID", mBallotID);
+        // get elecID and elecName and ballotID
+        mElectionID = (String) getArguments().getSerializable(ARG_ELECID);
         mElectionName = (String) getArguments().getSerializable(ARG_ELECNAME);
+        mBallotID = (String) getArguments().getSerializable(ARG_BALLOTID);
+        votes.put("ballotUID", mBallotID);
 
         // get description of votes
         new Thread(new Runnable() {
@@ -127,19 +131,31 @@ public class AbstainFragment extends Fragment {
 
     private void voteYes() {
         votes.put("votes", 3);
-        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
+        db.collection("election")
+                .document(mElectionName)
+                .collection("electorate")
+                .document(mElectionID)
+                .update("votes."+mBallotID, votes);
 
     }
 
     private void voteNo() {
         votes.put("votes", 1);
-        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
+        db.collection("election")
+                .document(mElectionName)
+                .collection("electorate")
+                .document(mElectionID)
+                .update("votes."+mBallotID, votes);
 
     }
 
     private void voteAbs() {
         votes.put("votes", 2);
-        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
+        db.collection("election")
+                .document(mElectionName)
+                .collection("electorate")
+                .document(mElectionID)
+                .update("votes."+mBallotID, votes);
     }
 
     private void readDesc() {

@@ -10,21 +10,23 @@ import android.support.v4.app.Fragment;
 
 public class AbstainActivity extends SingleFragmentActivity {
 
-    private static final String EXTRA_ELECID = "com.biz.tizzy.eballot.elecid";
-    private static final String EXTRA_ELECNAME = "com.biz.tizzy.eballot.elecname";
+    private static final String EXTRA_ELECID = "com.biz.tizzy.eballot.elecID";
+    private static final String EXTRA_ELECNAME = "com.biz.tizzy.eballot.elecName";
+    private static final String EXTRA_BALLOTID = "com.biz.tizzy.eballot.ballotID";
 
     @Override
     protected Fragment createFragment() {
-
         String elecID = (String) getIntent().getSerializableExtra(EXTRA_ELECID);
         String elecName = (String) getIntent().getSerializableExtra(EXTRA_ELECNAME);
-        return AbstainFragment.newInstance(elecID, elecName);
+        String ballotID = (String) getIntent().getSerializableExtra(EXTRA_BALLOTID);
+        return AbstainFragment.newInstance(elecID, elecName, ballotID);
     }
 
-    public static Intent newIntent(Context packageContext, String elecID, String elecName) {
+    public static Intent newIntent(Context packageContext, String elecID, String elecName, String ballotID) {
         Intent intent = new Intent(packageContext, AbstainActivity.class);
         intent.putExtra(EXTRA_ELECID, elecID);
         intent.putExtra(EXTRA_ELECNAME, elecName);
+        intent.putExtra(EXTRA_BALLOTID, ballotID);
         return intent;
     }
 

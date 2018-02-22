@@ -22,6 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -31,7 +35,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class StartFragment extends Fragment {
 
     private static final String TAG = "StartFragment";
-    public static final String EXTRA_ELECID = "com.biz.tizzy.eballot.elecid";
 
     private EditText mEnterCode;
     private Button mButton;
@@ -40,7 +43,7 @@ public class StartFragment extends Fragment {
     private boolean mValid;
     private String mElectionName;
     private String mBallotKey;
-    private String mBallotType;
+    private ArrayList<Ballot> mBallots = new ArrayList<>();
 
     // firestore
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -59,8 +62,16 @@ public class StartFragment extends Fragment {
         // check elecID
         mElectionName = "EXAMP";
 
-        mBallotKey = "1GOSsLTu0H27fr0xMRj6";
-        getVoteType();
+        //mBallotKey = "1GOSsLTu0H27fr0xMRj6";
+        //getVoteType();
+
+        // get ballots
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getBallots();
+            }
+        }).start();
 
         mEnterCode = (EditText) view.findViewById(R.id.enterid);
         mButton = (Button) view.findViewById(R.id.enterButton);
@@ -72,7 +83,7 @@ public class StartFragment extends Fragment {
                 validateElec();
 
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
-                if (mIsAuthenticated && ((mElecID != null) && mValid)) {
+                if (mIsAuthenticated && ((mElecID != null) && (mValid && (mBallots != null)))) {
                     /*
                     switch (mBallotType) {
                         case "1":
@@ -88,7 +99,7 @@ public class StartFragment extends Fragment {
                     */
 
                     // start votePager
-                    Intent intent = VotesPagerActivity.newIntent(getActivity(), mElecID, mElectionName);
+                    Intent intent = VotesPagerActivity.newIntent(getActivity(), mElecID, mElectionName, mBallots);
                     startActivity(intent);
 
                     // clear previously entered code
@@ -100,6 +111,7 @@ public class StartFragment extends Fragment {
         return view;
     }
 
+    /*
     private void goToNoAbstain() {
         Intent intent = NoAbstainActivity.newIntent(getActivity(), mElecID, mElectionName);
         intent.putExtra(EXTRA_ELECID, mElecID);
@@ -110,7 +122,7 @@ public class StartFragment extends Fragment {
         Intent intent = AbstainActivity.newIntent(getActivity(), mElecID, mElectionName);
         intent.putExtra(EXTRA_ELECID, mElecID);
         startActivity(intent);
-    }
+    } */
 
     private void authenticate() {
         // Authenticate anonymously
@@ -144,6 +156,31 @@ public class StartFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "Not a valid Election ID", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void getBallots() {
+        db.collection("election").document(mElectionName).collection("ballots")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Ballot ballot = new Ballot(
+                                        document.getId(),
+                                        (String) document.get("description"),
+                                        (String) document.get("type")
+                                );
+                                if (ballot != null) {
+                                    mBallots.add(ballot);
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
     private void validateElec() {
@@ -225,7 +262,7 @@ public class StartFragment extends Fragment {
                 if (task.isSuccessful()){
                     DocumentSnapshot doc = task.getResult();
 
-                    mBallotType = (String) doc.get("type");
+                    //mBallotType = (String) doc.get("type");
                 }
             }
         })
