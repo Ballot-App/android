@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -40,10 +36,11 @@ public class StartFragment extends Fragment {
     private EditText mEnterCode;
     private Button mButton;
     private String mElecID;
-    private String mVoteType;
     private boolean mIsAuthenticated;
     private boolean mValid;
     private String mElectionName;
+    private String mBallotKey;
+    private String mBallotType;
 
     // firestore
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -62,11 +59,10 @@ public class StartFragment extends Fragment {
         // check elecID
         mElectionName = "EXAMP";
 
-        // need to get vote type
-        mVoteType = "noabstain";
+        mBallotKey = "1GOSsLTu0H27fr0xMRj6";
+        getVoteType();
 
         mEnterCode = (EditText) view.findViewById(R.id.enterid);
-
         mButton = (Button) view.findViewById(R.id.enterButton);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,17 +73,24 @@ public class StartFragment extends Fragment {
 
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
                 if (mIsAuthenticated && ((mElecID != null) && mValid)) {
-                    switch (mVoteType) {
-                        case "abstain":
+                    /*
+                    switch (mBallotType) {
+                        case "1":
                             goToAbstain();
                             break;
-                        case "noabstain":
+                        case "2":
                             goToNoAbstain();
                             break;
                         default:
                             Toast.makeText(getContext(), "Could not get vote type", Toast.LENGTH_LONG).show();
                             break;
                     }
+                    */
+
+                    // start votePager
+                    Intent intent = VotesPagerActivity.newIntent(getActivity(), mElecID, mElectionName);
+                    startActivity(intent);
+
                     // clear previously entered code
                     mEnterCode.setText("");
                 }
@@ -98,13 +101,13 @@ public class StartFragment extends Fragment {
     }
 
     private void goToNoAbstain() {
-        Intent intent = NoAbstainActivity.newIntent(getActivity(), mElecID);
+        Intent intent = NoAbstainActivity.newIntent(getActivity(), mElecID, mElectionName);
         intent.putExtra(EXTRA_ELECID, mElecID);
         startActivity(intent);
     }
 
     private void goToAbstain() {
-        Intent intent = AbstainActivity.newIntent(getActivity(), mElecID);
+        Intent intent = AbstainActivity.newIntent(getActivity(), mElecID, mElectionName);
         intent.putExtra(EXTRA_ELECID, mElecID);
         startActivity(intent);
     }
@@ -211,5 +214,30 @@ public class StartFragment extends Fragment {
             }
         }
     }
+
+    private void getVoteType() {
+        // returns vote type of first vote
+
+        DocumentReference user = db.collection("election").document(mElectionName).collection("ballots").document(mBallotKey);
+        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot doc = task.getResult();
+
+                    mBallotType = (String) doc.get("type");
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+                    }
+                });
+
+    }
+
+
 
 }

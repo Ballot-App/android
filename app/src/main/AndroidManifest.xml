@@ -19,7 +19,7 @@
         <activity android:name=".AVActivity"></activity>
         <activity android:name=".NoAbstainActivity"></activity>
         <activity android:name=".AbstainActivity"></activity>
-
+        <activity android:name=".VotesPagerActivity"></activity>
 
     </application>
 

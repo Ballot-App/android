@@ -50,8 +50,10 @@
         android:id="@+id/vote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:background="#EDB147"
         android:text="@string/vote"
-        android:layout_margin="20dp"/>
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textSize="16sp"/>
 
 </LinearLayout>

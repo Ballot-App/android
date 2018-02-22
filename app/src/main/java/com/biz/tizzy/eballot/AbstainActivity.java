@@ -11,17 +11,20 @@ import android.support.v4.app.Fragment;
 public class AbstainActivity extends SingleFragmentActivity {
 
     private static final String EXTRA_ELECID = "com.biz.tizzy.eballot.elecid";
+    private static final String EXTRA_ELECNAME = "com.biz.tizzy.eballot.elecname";
 
     @Override
     protected Fragment createFragment() {
 
         String elecID = (String) getIntent().getSerializableExtra(EXTRA_ELECID);
-        return AbstainFragment.newInstance(elecID);
+        String elecName = (String) getIntent().getSerializableExtra(EXTRA_ELECNAME);
+        return AbstainFragment.newInstance(elecID, elecName);
     }
 
-    public static Intent newIntent(Context packageContext, String elecID) {
+    public static Intent newIntent(Context packageContext, String elecID, String elecName) {
         Intent intent = new Intent(packageContext, AbstainActivity.class);
         intent.putExtra(EXTRA_ELECID, elecID);
+        intent.putExtra(EXTRA_ELECNAME, elecName);
         return intent;
     }
 

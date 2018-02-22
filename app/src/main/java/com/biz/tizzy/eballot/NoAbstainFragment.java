@@ -30,6 +30,7 @@ public class NoAbstainFragment extends Fragment {
 
     private static final String DIALOG_THANK_YOU = "ThankYou";
     private static final String ARG_ELECID = "elecID";
+    private static final String ARG_ELECNAME = "elecName";
 
     private TextView mDescView;
     private RadioButton mYayButton;
@@ -44,9 +45,10 @@ public class NoAbstainFragment extends Fragment {
     private String mUserID;
     private String mElectionName;
 
-    public static NoAbstainFragment newInstance(String elecID) {
+    public static NoAbstainFragment newInstance(String elecID, String elecName) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_ELECID, elecID);
+        args.putSerializable(ARG_ELECNAME, elecName);
 
         NoAbstainFragment fragment = new NoAbstainFragment();
         fragment.setArguments(args);
@@ -57,11 +59,10 @@ public class NoAbstainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_noabstain, container, false);
 
-        // get elecID
+        // get elecID and elecName
         mBallotID = (String) getArguments().getSerializable(ARG_ELECID);
+        mElectionName = (String) getArguments().getSerializable(ARG_ELECNAME);
         votes.put("ballotUID", mBallotID);
-
-        mElectionName = "EXAMP";
 
         // get description of votes
         new Thread(new Runnable() {
