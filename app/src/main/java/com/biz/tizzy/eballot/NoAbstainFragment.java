@@ -1,6 +1,7 @@
 package com.biz.tizzy.eballot;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -11,7 +12,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -27,14 +31,18 @@ public class NoAbstainFragment extends Fragment {
     private static final String DIALOG_THANK_YOU = "ThankYou";
     private static final String ARG_ELECID = "elecID";
 
-    private TextView mTextView;
+    private TextView mDescView;
     private RadioButton mYayButton;
     private RadioButton mNayButton;
     private Button mVoteButton;
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Map<String, Object> votes = new HashMap<>();
-    private int mNumVotes;
-    private String mElecID;
+
+    private String mBallotID;
+    private String mDesc;
+    private String mUserID;
+    private String mElectionName;
 
     public static NoAbstainFragment newInstance(String elecID) {
         Bundle args = new Bundle();
@@ -50,21 +58,27 @@ public class NoAbstainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_noabstain, container, false);
 
         // get elecID
-        mElecID = (String) getArguments().getSerializable(ARG_ELECID);
+        mBallotID = (String) getArguments().getSerializable(ARG_ELECID);
+        votes.put("ballotUID", mBallotID);
 
-        mNumVotes = 0;
+        mElectionName = "EXAMP";
 
-        // need to first set up votes from db
-        // so everything isn't just overwritten...
-
-        mTextView = (TextView) view.findViewById(R.id.description);
-        mTextView.setOnClickListener(new View.OnClickListener() {
+        // get description of votes
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                // dialog with more information
+            public void run() {
+                readDesc();
             }
-        });
+        }).start();
 
+        // get userID
+        new Thread(new Runnable() {
+            public void run() {
+                getUserID();
+            }
+        }).start();
+
+        mDescView = view.findViewById(R.id.description);
         mYayButton = (RadioButton) view.findViewById(R.id.yay);
         mNayButton = (RadioButton) view.findViewById(R.id.nay);
 
@@ -99,14 +113,51 @@ public class NoAbstainFragment extends Fragment {
     }
 
     private void voteYes() {
-        votes.put("vote" + mNumVotes, true);
-        mNumVotes++;
-        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
+        votes.put("votes", true);db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
     }
 
     private void voteNo() {
-        votes.put("vote" + mNumVotes, false);
-        mNumVotes++;
-        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
+        votes.put("votes", false);db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
+    }
+
+    private void readDesc() {
+        DocumentReference user = db.collection("election").document(mElectionName);
+        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot doc = task.getResult();
+
+                    mDesc = (String) doc.get("description");
+                    mDescView.setText(mDesc);
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+                    }
+                });
+    }
+
+    private void getUserID() {
+        DocumentReference user = db.collection("election").document(mElectionName);
+        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot doc = task.getResult();
+
+                    mUserID = (String) doc.get("user");
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+                    }
+                });
     }
 }

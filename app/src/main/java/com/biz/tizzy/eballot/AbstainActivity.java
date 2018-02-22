@@ -16,14 +16,12 @@ public class AbstainActivity extends SingleFragmentActivity {
     protected Fragment createFragment() {
 
         String elecID = (String) getIntent().getSerializableExtra(EXTRA_ELECID);
-
         return AbstainFragment.newInstance(elecID);
     }
 
     public static Intent newIntent(Context packageContext, String elecID) {
         Intent intent = new Intent(packageContext, AbstainActivity.class);
         intent.putExtra(EXTRA_ELECID, elecID);
-
         return intent;
     }
 

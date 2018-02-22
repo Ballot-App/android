@@ -59,11 +59,10 @@ public class StartFragment extends Fragment {
         // Authenticate anonymously
         authenticate();
 
-        // read dat shi
         //readExamp();
 
         // need to get vote type
-        mVoteType = "abstain";
+        mVoteType = "noabstain";
 
         mButton = (Button) view.findViewById(R.id.enterButton);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +96,6 @@ public class StartFragment extends Fragment {
 
         return view;
     }
-
-
 
     private void goToNoAbstain() {
         Intent intent = NoAbstainActivity.newIntent(getActivity(), mElecID);
@@ -138,12 +135,6 @@ public class StartFragment extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
                     DocumentSnapshot doc = task.getResult();
-
-                    //StringBuilder fields = new StringBuilder("");
-                    //fields.append("Name: ").append(doc.get("Name"));
-                    //fields.append("\nEmail: ").append(doc.get("Email"));
-                    //fields.append("\nPhone: ").append(doc.get("Phone"));
-                    //textDisplay.setText(fields.toString());
 
                     Toast.makeText(getContext(), "Yes: " + doc.get("yes"), Toast.LENGTH_LONG);
 

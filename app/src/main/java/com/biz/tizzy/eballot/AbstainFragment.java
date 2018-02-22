@@ -39,13 +39,12 @@ public class AbstainFragment extends Fragment {
     private TextView mDescView;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String mElectionName;
     private Map<String, Object> votes = new HashMap<>();
-    private Map<String, Object> votesList = new HashMap<>();
-    private Map<String, Object> completeElectorate = new HashMap<>();
+
     private String mBallotID;
     private String mDesc;
     private String mUserID;
+    private String mElectionName;
 
     public static AbstainFragment newInstance(String elecID) {
         Bundle args = new Bundle();
@@ -62,12 +61,9 @@ public class AbstainFragment extends Fragment {
 
         // get elecID
         mBallotID = (String) getArguments().getSerializable(ARG_ELECID);
-        votes.put("ballot", mBallotID);
+        votes.put("ballotUID", mBallotID);
 
-        // set up electorate
         mElectionName = "EXAMP";
-        completeElectorate.put("id", mBallotID);
-        completeElectorate.put("locked", true);
 
         // get description of votes
         new Thread(new Runnable() {
@@ -129,22 +125,20 @@ public class AbstainFragment extends Fragment {
     }
 
     private void voteYes() {
-
         votes.put("votes", 3);
-        votesList.put(mUserID, votes);
-        completeElectorate.put("votes", votesList);
+        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
 
-        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).set(completeElectorate);
     }
 
     private void voteNo() {
         votes.put("votes", 1);
-        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).set(votes);
+        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
+
     }
 
     private void voteAbs() {
         votes.put("votes", 2);
-        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).set(votes);
+        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).update("votes."+mUserID, votes);
     }
 
     private void readDesc() {
@@ -187,6 +181,5 @@ public class AbstainFragment extends Fragment {
                     }
                 });
     }
-
 
 }
