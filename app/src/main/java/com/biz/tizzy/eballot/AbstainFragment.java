@@ -97,26 +97,14 @@ public class AbstainFragment extends Fragment {
                 // write to DB
                 if (mNayButton.isChecked()) {
                     voteNo();
-                    // start dialog
-                    FragmentManager manager = getFragmentManager();
-                    ThankYouFragment dialog = new ThankYouFragment();
-                    dialog.show(manager, DIALOG_THANK_YOU);
 
                 } else {
                     if (mYayButton.isChecked()) {
                         voteYes();
-                        // start dialog
-                        FragmentManager manager = getFragmentManager();
-                        ThankYouFragment dialog = new ThankYouFragment();
-                        dialog.show(manager, DIALOG_THANK_YOU);
 
                     } else {
                         if (mAbstainButton.isChecked()) {
                             voteAbs();
-                            // start dialog
-                            FragmentManager manager = getFragmentManager();
-                            ThankYouFragment dialog = new ThankYouFragment();
-                            dialog.show(manager, DIALOG_THANK_YOU);
 
                         } else {
                             Toast.makeText(getContext(), "Please vote", Toast.LENGTH_LONG).show();

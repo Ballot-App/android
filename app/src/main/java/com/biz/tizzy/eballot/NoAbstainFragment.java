@@ -51,7 +51,7 @@ public class NoAbstainFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable(ARG_ELECID, elecID);
         args.putSerializable(ARG_ELECNAME, elecName);
-        args.putSerializable(ARG_BALLOTID, elecName);
+        args.putSerializable(ARG_BALLOTID, ballotID);
 
         NoAbstainFragment fragment = new NoAbstainFragment();
         fragment.setArguments(args);
@@ -94,18 +94,10 @@ public class NoAbstainFragment extends Fragment {
                 // write to DB
                 if (mNayButton.isChecked()) {
                     voteNo();
-                    // start dialog
-                    //FragmentManager manager = getFragmentManager();
-                    //ThankYouFragment dialog = new ThankYouFragment();
-                    //dialog.show(manager, DIALOG_THANK_YOU);
 
                 } else {
                     if (mYayButton.isChecked()) {
                         voteYes();
-                        // start dialog
-                        //FragmentManager manager = getFragmentManager();
-                        //ThankYouFragment dialog = new ThankYouFragment();
-                        //dialog.show(manager, DIALOG_THANK_YOU);
 
                     } else {
                         Toast.makeText(getContext(), "Please vote", Toast.LENGTH_LONG).show();

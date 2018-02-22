@@ -4,13 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +21,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by tizzy on 2/22/18.
@@ -31,11 +32,14 @@ public class VotesPagerActivity extends AppCompatActivity {
     private static final String EXTRA_ELECID = "com.biz.tizzy.eballot.elecid";
     private static final String EXTRA_ELECNAME = "com.biz.tizzy.eballot.elecname";
     private static final String EXTRA_BALLOTS = "com.biz.tizzy.eballot.ballots";
+    private static final String DIALOG_THANK_YOU = "ThankYou";
 
     private String mElecID;
     private String mElecName;
     private ArrayList<Ballot> mBallots;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private Button mDoneButton;
 
     public static Intent newIntent(Context packageContext, String elecID, String elecName, ArrayList<Ballot> ballots) {
         Intent intent = new Intent(packageContext, VotesPagerActivity.class);
@@ -53,6 +57,16 @@ public class VotesPagerActivity extends AppCompatActivity {
         mElecID = (String) getIntent().getSerializableExtra(EXTRA_ELECID);
         mElecName = (String) getIntent().getSerializableExtra(EXTRA_ELECNAME);
         mBallots = (ArrayList<Ballot>) getIntent().getSerializableExtra(EXTRA_BALLOTS);
+
+        mDoneButton = (Button) findViewById(R.id.doneButton);
+        mDoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // start dialog
+                DialogFragment dialog = new ThankYouFragment();
+                dialog.show(getSupportFragmentManager(), DIALOG_THANK_YOU);
+            }
+        });
 
         ViewPager pager = (ViewPager) findViewById(R.id.votes_view_pager);
         pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));

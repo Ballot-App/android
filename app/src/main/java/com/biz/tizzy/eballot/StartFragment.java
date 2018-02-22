@@ -42,7 +42,6 @@ public class StartFragment extends Fragment {
     private boolean mIsAuthenticated;
     private boolean mValid;
     private String mElectionName;
-    private String mBallotKey;
     private ArrayList<Ballot> mBallots = new ArrayList<>();
 
     // firestore
@@ -54,16 +53,13 @@ public class StartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
 
         Firebase.setAndroidContext(getActivity());
-        Firebase mFirebaseRef = new Firebase("https://eballot-46bb1.firebaseio.com/");
+        //Firebase mFirebaseRef = new Firebase("https://eballot-46bb1.firebaseio.com/");
 
         // Authenticate anonymously
         authenticate();
 
         // check elecID
         mElectionName = "EXAMP";
-
-        //mBallotKey = "1GOSsLTu0H27fr0xMRj6";
-        //getVoteType();
 
         // get ballots
         new Thread(new Runnable() {
@@ -84,19 +80,6 @@ public class StartFragment extends Fragment {
 
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
                 if (mIsAuthenticated && ((mElecID != null) && (mValid && (mBallots != null)))) {
-                    /*
-                    switch (mBallotType) {
-                        case "1":
-                            goToAbstain();
-                            break;
-                        case "2":
-                            goToNoAbstain();
-                            break;
-                        default:
-                            Toast.makeText(getContext(), "Could not get vote type", Toast.LENGTH_LONG).show();
-                            break;
-                    }
-                    */
 
                     // start votePager
                     Intent intent = VotesPagerActivity.newIntent(getActivity(), mElecID, mElectionName, mBallots);
@@ -110,19 +93,6 @@ public class StartFragment extends Fragment {
 
         return view;
     }
-
-    /*
-    private void goToNoAbstain() {
-        Intent intent = NoAbstainActivity.newIntent(getActivity(), mElecID, mElectionName);
-        intent.putExtra(EXTRA_ELECID, mElecID);
-        startActivity(intent);
-    }
-
-    private void goToAbstain() {
-        Intent intent = AbstainActivity.newIntent(getActivity(), mElecID, mElectionName);
-        intent.putExtra(EXTRA_ELECID, mElecID);
-        startActivity(intent);
-    } */
 
     private void authenticate() {
         // Authenticate anonymously
@@ -251,30 +221,6 @@ public class StartFragment extends Fragment {
             }
         }
     }
-
-    private void getVoteType() {
-        // returns vote type of first vote
-
-        DocumentReference user = db.collection("election").document(mElectionName).collection("ballots").document(mBallotKey);
-        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    DocumentSnapshot doc = task.getResult();
-
-                    //mBallotType = (String) doc.get("type");
-                }
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
-                    }
-                });
-
-    }
-
 
 
 }

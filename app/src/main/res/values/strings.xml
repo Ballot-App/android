@@ -13,5 +13,6 @@
     <string name="filler">Loading...</string>
 
     <string name="close">CLOSE</string>
+    <string name="done">DONE</string>
 
 </resources>
