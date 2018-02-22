@@ -42,6 +42,8 @@ public class StartFragment extends Fragment {
     private String mElecID;
     private String mVoteType;
     private boolean mIsAuthenticated;
+    private boolean mValid;
+    private String mElectionName;
 
     // firestore
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -54,29 +56,27 @@ public class StartFragment extends Fragment {
         Firebase.setAndroidContext(getActivity());
         Firebase mFirebaseRef = new Firebase("https://eballot-46bb1.firebaseio.com/");
 
-        mEnterCode = (EditText) view.findViewById(R.id.enterid);
-
         // Authenticate anonymously
         authenticate();
 
-        //readExamp();
+        // check elecID
+        mElectionName = "EXAMP";
 
         // need to get vote type
         mVoteType = "noabstain";
+
+        mEnterCode = (EditText) view.findViewById(R.id.enterid);
 
         mButton = (Button) view.findViewById(R.id.enterButton);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // get entered ID
-                mElecID = mEnterCode.getText().toString();
 
-                // read from db
-
-                // confirm elecID exists
+                getElectionDetails();
+                validateElec();
 
                 //if (mIsAuthenticated && voteIDinDatabase(mEnteredVoteID)) {
-                if (mIsAuthenticated && (mElecID != null)) {
+                if (mIsAuthenticated && ((mElecID != null) && mValid)) {
                     switch (mVoteType) {
                         case "abstain":
                             goToAbstain();
@@ -128,25 +128,88 @@ public class StartFragment extends Fragment {
         });
     }
 
-    private void readExamp() {
-        DocumentReference user = db.collection("election").document("examp").collection("electorate").document("hjk123sd");
-        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    private void getElectionDetails() {
+        // retrieves election name and elecid
+
+        String entered = mEnterCode.getText().toString();
+        // check it's formatted right
+        if ((entered.length() == 14) && (entered.charAt(5) == '-')) {
+
+            String[] parts = entered.split("-");
+            mElectionName = parts[0];
+            mElecID = parts[1];
+        } else {
+            Toast.makeText(getContext(), "Not a valid Election ID", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void validateElec() {
+
+        // check election name exists
+        DocumentReference docRef = db.collection("election").document(mElectionName);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    DocumentSnapshot doc = task.getResult();
-
-                    Toast.makeText(getContext(), "Yes: " + doc.get("yes"), Toast.LENGTH_LONG);
-
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
+                        mValid = true;
+                    } else {
+                        Log.d(TAG, "No such document");
+                        mValid = false;
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                    mValid = false;
                 }
             }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+        });
+
+        if (mValid) {
+            // check elecID exists
+            DocumentReference docRef2 = db.collection("election").document(mElectionName).collection("electorate").document(mElecID);
+            docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null) {
+                            Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
+                            mValid = true;
+                        } else {
+                            Log.d(TAG, "No such document");
+                            mValid = false;
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                        mValid = false;
                     }
-                });
+                }
+            });
+
+            if (mValid) {
+                // check election not locked
+                DocumentReference user = db.collection("election").document(mElectionName).collection("electorate").document(mElecID);
+                user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot doc = task.getResult();
+
+                            mValid = !(boolean) doc.get("locked");
+                        }
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+                                mValid = false;
+                            }
+                        });
+            }
+        }
     }
 
 }
