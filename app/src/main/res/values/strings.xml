@@ -10,7 +10,7 @@
     <string name="abstain">Abstain</string>
 
     <string name="vote">VOTE</string>
-    <string name="filler">blah blah blah description of the thing</string>
+    <string name="filler">Loading...</string>
 
     <string name="close">CLOSE</string>
 

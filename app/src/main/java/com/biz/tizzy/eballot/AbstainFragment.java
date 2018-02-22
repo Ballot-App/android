@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +39,13 @@ public class AbstainFragment extends Fragment {
     private TextView mDescView;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String mElectionName;
     private Map<String, Object> votes = new HashMap<>();
-    private long mNumYesVotes;
-    private long mNumNoVotes;
-    private long mNumAbsVotes;
-    private String mElecID;
+    private Map<String, Object> votesList = new HashMap<>();
+    private Map<String, Object> completeElectorate = new HashMap<>();
+    private String mBallotID;
     private String mDesc;
+    private String mUserID;
 
     public static AbstainFragment newInstance(String elecID) {
         Bundle args = new Bundle();
@@ -61,7 +61,13 @@ public class AbstainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_abstain, container, false);
 
         // get elecID
-        mElecID = (String) getArguments().getSerializable(ARG_ELECID);
+        mBallotID = (String) getArguments().getSerializable(ARG_ELECID);
+        votes.put("ballot", mBallotID);
+
+        // set up electorate
+        mElectionName = "EXAMP";
+        completeElectorate.put("id", mBallotID);
+        completeElectorate.put("locked", true);
 
         // get description of votes
         new Thread(new Runnable() {
@@ -71,13 +77,10 @@ public class AbstainFragment extends Fragment {
             }
         }).start();
 
-        // read num yes votes
+        // get userID
         new Thread(new Runnable() {
             public void run() {
-                readNumVotes();
-                votes.put("yes", mNumNoVotes);
-                votes.put("no", mNumNoVotes);
-                votes.put("abstain", mNumAbsVotes);
+                getUserID();
             }
         }).start();
 
@@ -100,7 +103,6 @@ public class AbstainFragment extends Fragment {
 
                 } else {
                     if (mYayButton.isChecked()) {
-
                         voteYes();
                         // start dialog
                         FragmentManager manager = getFragmentManager();
@@ -127,48 +129,34 @@ public class AbstainFragment extends Fragment {
     }
 
     private void voteYes() {
-        votes.put("yes", mNumYesVotes+1);
-        db.collection("election").document("LukeE").collection("electorate").document(mElecID).set(votes);
+
+        votes.put("votes", 3);
+        votesList.put(mUserID, votes);
+        completeElectorate.put("votes", votesList);
+
+        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).set(completeElectorate);
     }
 
     private void voteNo() {
-        votes.put("no", mNumNoVotes+1);
-        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
+        votes.put("votes", 1);
+        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).set(votes);
     }
 
     private void voteAbs() {
-        votes.put("abstain", mNumAbsVotes+1);
-        db.collection("election").document("examp").collection("electorate").document(mElecID).set(votes);
+        votes.put("votes", 2);
+        db.collection("election").document(mElectionName).collection("electorate").document(mBallotID).set(votes);
     }
 
-    private void readNumVotes() {
-        DocumentReference user = db.collection("election").document("LukeE").collection("electorate").document(mElecID);
-
+    private void readDesc() {
+        DocumentReference user = db.collection("election").document(mElectionName);
         user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
-                    // need to check if this document exists
-
                     DocumentSnapshot doc = task.getResult();
-                    if (doc.exists()) {
-                        mNumYesVotes = (long) doc.get("yes");
-                        mNumNoVotes = (long) doc.get("no");
-                        mNumAbsVotes = (long) doc.get("abstain");
-                    } else {
-                        Log.e(TAG, "Document doesn't exist");
 
-                        // initialize votes
-                        votes.put("yes", 0);
-                        votes.put("no", 0);
-                        votes.put("abstain", 0);
-
-                        // set num votes to 0
-                        mNumYesVotes = 0;
-                        mNumNoVotes = 0;
-                        mNumAbsVotes = 0;
-                    }
-
+                    mDesc = (String) doc.get("description");
+                    mDescView.setText(mDesc);
                 }
             }
         })
@@ -180,17 +168,15 @@ public class AbstainFragment extends Fragment {
                 });
     }
 
-    private void readDesc() {
-        DocumentReference user = db.collection("election").document("LukeE");
+    private void getUserID() {
+        DocumentReference user = db.collection("election").document(mElectionName);
         user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
                     DocumentSnapshot doc = task.getResult();
 
-                    mDesc = (String) doc.get("description");
-                    Log.d(TAG, mDesc);
-                    mDescView.setText(mDesc);
+                    mUserID = (String) doc.get("user");
                 }
             }
         })
